@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <img id="recive" style="width:400px; height: 330px;">
+        <div id="comment" style="width: 400px; height: 330px;position:absolute;background: rgba(0,0,0,0.3);color:white;top:0px;left: 0px; overflow: auto;"></div>
+        <input type="text" id="msg"/>
+        <button onclick="sendMsg()">send</button>
+        <script type="text/javascript">
+            var recive_socket = new WebSocket("ws://localhost:8080/Live/onlineServer");
+            var image = document.getElementById("recive");
+            recive_socket.onmessage = function(data){
+                image.src = info.data;
+            }
+            var msg_socket = new WebSocket("ws://localhost:8080/Live/chatroom");
+            msg_socket.onmessage = function(data){
+                document.getElementById("comment").innerHTML+="&nbsp"+data.data;
+            }
+            function senMsg(){
+                var msg = document.getElementById("msg").value;
+                msg_socket.send(msg);
+            }
+        </script>
+    </body>
+</html>

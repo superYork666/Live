@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <video id="vi" src="" autoplay style="width: 640px; height: 480px;"></video>
+        <canvas id="output" style="display: none"></canvas>
+        <script type="text/javascript">
+            var backContext = document.getElementById("output").getContext("2d");
+            var video = document.getElementById("vi");
+            var socket;
+            var interval;
+            var back = document.getElementById("output");
+            setTimeout("init()",100)
+            
+            function init(){
+                socket  = new WebSocket("ws://localhost:8080/Live/onlineServer");
+                socket.onopen = onOpen;
+                socket.onclose = onClose;
+            }
+            
+            function onOpen(){
+                //定时传输数据到服务器
+                interval = setInterval(function(){draw()},50);
+            }
+            
+            function onClose(){
+                init();
+            }
+            
+            function draw(){
+                backContext.drawImage(video,0,0,back.width,back.height);
+                //将视频图像的50%像素发送
+                socket.send(back.toDataURL("image/jpeg",0.2))
+                
+            }
+            var success = function(){
+                document.getElementById("vi").src = window.URL.createObjectURL(stream);
+            }
+            //bom
+                navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMeida || navigator.mozGetUserMedia || navigator.msGetUserMeida;
+                
+                navigator.getUserMedia({video:true, audio:true},success,console.log);
+        </script>
+    </body>
+</html>
